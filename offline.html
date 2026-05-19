@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#0a0a0f" />
+  <title>LifeRebuild Offline</title>
+  <style>
+    :root{
+      --bg:#0a0a0f; --bg2:#11111a; --gold:#f5c518; --gold2:#e6b800;
+      --green:#22c55e; --red:#ef4444; --text:#f4f4fb; --text2:#a5a5bd;
+      --text3:#6f6f86; --border:rgba(255,255,255,.08);
+      --shadow:0 24px 80px rgba(0,0,0,.45);
+    }
+    *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+    html,body{
+      min-height:100%; color:var(--text);
+      font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      background:
+        radial-gradient(circle at 20% 10%, rgba(245,197,24,.16), transparent 34%),
+        radial-gradient(circle at 85% 20%, rgba(34,197,94,.12), transparent 30%),
+        linear-gradient(180deg,#08080d 0%,#0a0a0f 50%,#050507 100%);
+      overflow-x:hidden;
+    }
+    body{display:flex;justify-content:center}
+    .app{
+      width:100%; max-width:520px; min-height:100svh;
+      padding:env(safe-area-inset-top) 18px env(safe-area-inset-bottom);
+      position:relative; display:flex; flex-direction:column; justify-content:space-between; overflow:hidden;
+    }
+    .glow{position:absolute;inset:auto -80px -160px -80px;height:320px;background:radial-gradient(circle,rgba(245,197,24,.18),transparent 64%);pointer-events:none;filter:blur(10px)}
+    .top{padding-top:22px;display:flex;align-items:center;justify-content:space-between;position:relative;z-index:2}
+    .brand{display:flex;align-items:center;gap:12px}
+    .logo{
+      width:44px;height:44px;border-radius:16px;background:linear-gradient(145deg,#1b1b25,#09090e);
+      border:1px solid rgba(245,197,24,.34);display:grid;place-items:center;
+      box-shadow:0 10px 32px rgba(245,197,24,.12);position:relative;overflow:hidden;
+    }
+    .logo:before{content:"";position:absolute;width:80%;height:80%;border:2px solid var(--gold);border-radius:50%;opacity:.8}
+    .logo span{position:relative;color:var(--gold);font-weight:950;font-size:18px;letter-spacing:-1px}
+    .brand h1{font-size:17px;line-height:1;letter-spacing:.2px}
+    .brand p{margin-top:4px;font-size:11px;color:var(--text3);font-weight:700;letter-spacing:1.4px;text-transform:uppercase}
+    .status{
+      padding:8px 10px;border-radius:999px;background:rgba(239,68,68,.10);color:#ffb4b4;
+      border:1px solid rgba(239,68,68,.22);font-size:11px;font-weight:800;display:flex;align-items:center;gap:6px;
+    }
+    .dot{width:7px;height:7px;border-radius:50%;background:var(--red);box-shadow:0 0 0 4px rgba(239,68,68,.14)}
+    .hero{position:relative;z-index:2;padding:36px 0 18px;display:flex;flex-direction:column;align-items:center;text-align:center}
+    .orb{
+      width:min(58vw,250px);height:min(58vw,250px);border-radius:50%;
+      background:radial-gradient(circle at 35% 30%,rgba(255,255,255,.16),transparent 20%),radial-gradient(circle at center,rgba(245,197,24,.22),rgba(245,197,24,.04) 55%,transparent 70%);
+      border:1px solid rgba(245,197,24,.22);display:grid;place-items:center;margin-bottom:28px;box-shadow:var(--shadow);animation:float 4.5s ease-in-out infinite;
+    }
+    @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+    .offline-icon{
+      width:54%;height:54%;border-radius:32%;background:linear-gradient(145deg,rgba(245,197,24,.98),rgba(230,184,0,.78));
+      display:grid;place-items:center;color:#050507;font-size:clamp(48px,16vw,82px);font-weight:950;box-shadow:0 18px 60px rgba(245,197,24,.24);
+    }
+    .hero h2{font-size:clamp(30px,9vw,48px);line-height:.98;letter-spacing:-1.8px;max-width:360px}
+    .hero h2 span{color:var(--gold)}
+    .hero .sub{margin-top:14px;color:var(--text2);font-size:15px;line-height:1.55;max-width:340px}
+    .panel{
+      position:relative;z-index:2;background:linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,.025));
+      border:1px solid var(--border);border-radius:28px;padding:16px;box-shadow:var(--shadow);backdrop-filter:blur(18px);
+    }
+    .mission{display:grid;gap:10px}
+    .mission-title{display:flex;align-items:center;justify-content:space-between;margin-bottom:2px}
+    .mission-title strong{font-size:14px;letter-spacing:.2px}
+    .mission-title span{color:var(--gold);font-size:12px;font-weight:900}
+    .item{display:flex;gap:12px;align-items:flex-start;padding:13px;border-radius:18px;background:rgba(0,0,0,.18);border:1px solid rgba(255,255,255,.06)}
+    .check{width:22px;height:22px;border-radius:8px;display:grid;place-items:center;flex:0 0 auto;background:rgba(34,197,94,.12);color:var(--green);border:1px solid rgba(34,197,94,.24);font-size:13px;font-weight:900}
+    .item h3{font-size:13px;margin-bottom:3px}
+    .item p{font-size:12px;color:var(--text3);line-height:1.45}
+    .actions{display:grid;gap:10px;margin-top:14px}
+    button,a.btn{width:100%;border:0;border-radius:18px;padding:15px 16px;font-size:14px;font-weight:900;cursor:pointer;text-decoration:none;text-align:center;transition:transform .15s ease,opacity .15s ease}
+    button:active,a.btn:active{transform:scale(.98)}
+    .primary{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#050507;box-shadow:0 12px 34px rgba(245,197,24,.20)}
+    .secondary{background:rgba(255,255,255,.07);color:var(--text);border:1px solid rgba(255,255,255,.09)}
+    .footer{position:relative;z-index:2;padding:18px 0 20px;text-align:center;color:var(--text3);font-size:11px;line-height:1.5}
+    .quote{margin-top:8px;color:rgba(245,197,24,.72);font-weight:800;letter-spacing:.3px}
+    @media (min-width:700px){.app{justify-content:center;gap:22px}.hero{padding-top:20px}.panel{margin-bottom:10px}}
+  </style>
+</head>
+<body>
+  <main class="app">
+    <div class="glow"></div>
+    <header class="top">
+      <div class="brand">
+        <div class="logo"><span>LR</span></div>
+        <div><h1>LifeRebuild</h1><p>Reset. Focus. Grow.</p></div>
+      </div>
+      <div class="status"><span class="dot"></span> Offline</div>
+    </header>
+
+    <section class="hero">
+      <div class="orb"><div class="offline-icon">⌁</div></div>
+      <h2>You’re offline.<br><span>Your streak isn’t dead.</span></h2>
+      <p class="sub">No internet right now. Your saved app data may still work if it was cached earlier. If not, reconnect and reload.</p>
+    </section>
+
+    <section class="panel">
+      <div class="mission">
+        <div class="mission-title"><strong>Offline survival checklist</strong><span>3 min reset</span></div>
+        <div class="item"><div class="check">✓</div><div><h3>Do one tiny habit</h3><p>Push-ups, water, reading, journaling. One action beats a perfect plan rotting in your notes app.</p></div></div>
+        <div class="item"><div class="check">✓</div><div><h3>Write your next move</h3><p>Use any notes app. When LifeRebuild loads again, log it properly like a functioning citizen.</p></div></div>
+        <div class="item"><div class="check">✓</div><div><h3>Retry connection</h3><p>Once internet returns, reload the app and continue your challenge.</p></div></div>
+      </div>
+      <div class="actions">
+        <button class="primary" onclick="location.reload()">Try Again</button>
+        <a class="btn secondary" href="./index.html">Open App Home</a>
+      </div>
+    </section>
+
+    <footer class="footer">LifeRebuild works best after the app has been opened once online.<div class="quote">No zero day. Even offline.</div></footer>
+  </main>
+  <script>
+    window.addEventListener('online', () => {
+      document.querySelector('.status').innerHTML = '<span class="dot" style="background:#22c55e;box-shadow:0 0 0 4px rgba(34,197,94,.14)"></span> Online';
+      setTimeout(() => location.href = './index.html', 700);
+    });
+  </script>
+</body>
+</html>
